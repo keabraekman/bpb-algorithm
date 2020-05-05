@@ -34,9 +34,9 @@ def initialize_games_call_response(season):
     return games_response
 
 # I think we can delete lineups and just keep the all_lineups
-all_lineups = pickle.load(open('all_lineups.pkl', 'rb'))
-
-
+lineups1 = pickle.load(open('lineups2.pkl', 'rb'))
+lineups2 = pickle.load(open('lineups1.pkl', 'rb'))
+all_lineups = {**lineups1, **lineups2}
 
 
 team_stats_2016 = pickle.load(open('team_stats_2016.pkl', 'rb'))
@@ -411,6 +411,7 @@ model_logistic = LogisticRegression(penalty='l2', tol=0.05)
 # model_logistic = LogisticRegression(penalty='l2')
 model_logistic.fit(norm_train_stats, training_win_list_numpy)
 score = model_logistic.score(norm_test_stats, test_win_list_numpy)
+print('test shape = ', norm_test_stats.shape)
 # print('SCORE = ', score)
 
 
@@ -486,10 +487,11 @@ def predict(game_id):
     del prediction[1494:1504]
     prediction_numpy = np.asarray(prediction, dtype=np.float32)
     norm_prediction = normalize(prediction_numpy, train_mean, train_std)
+    print('PREDICTION SHAPE = ', norm_prediction.shape)
     probability = model_logistic.predict_proba(np.expand_dims(norm_prediction, axis=0))[0]
     return probability
 
-
+print('training shape = ', norm_train_stats.shape)
 print(predict(51258))
 
 # ========================================================================================================================================
